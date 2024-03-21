@@ -10,14 +10,13 @@ const pool = mysql.createPool({
     database: process.env.MYSQL_DATABASE
 }).promise();
 
-
 export async function getArticles(){
     const result = await pool.query("SELECT * FROM Articles");
-    return result;
+    return result[0];
 };
 
-export async function getArticle(id){
-    const result = await pool.query(`
+export async function getArticleById(id){
+    const [result] = await pool.query(`
     SELECT * FROM Articles
     WHERE id = ?
     `, [id]);
@@ -26,8 +25,7 @@ export async function getArticle(id){
 
 export async function addArticle(name, description, category_id){
     //check category_id
-    const [result] = await query(
-        `
+    const [result] = await pool.query(`
         INSERT INTO Articles (name, description, category_id)
         VALUES (?, ?, ?)
         `, [name, description, category_id]
@@ -41,5 +39,9 @@ export async function addArticle(name, description, category_id){
 }
 
 const art = await getArticles();
-const art1 = await getArticle(1);
-console.log(rows);
+const art1 = await getArticleById(1);
+// console.log(art);
+// console.log(art1);
+
+// const newArt = await addArticle('New article', 'This article is about JS');
+// console.log(newArt);
