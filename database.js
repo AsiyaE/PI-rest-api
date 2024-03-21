@@ -36,6 +36,28 @@ export async function addArticle(name, description, category_id){
         description,
         category_id
     };
+};
+
+export async function changeArticle(id, category_id, name, description){
+    const prevArtic = getArticleById(id);
+    const result = await db.query(`
+        UPDATE Articles 
+        SET name=?, description=?, category_id=?
+        WHERE id=?
+        `, 
+        [   name ? name : article.name,
+            description ? description : article.description,
+            category_id ? category_id : article.category_id,
+            id
+        ]
+    );
+    return {
+        id: result.insertId,
+        name,
+        description,
+        category_id
+    };
+    
 }
 
 const art = await getArticles();

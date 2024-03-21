@@ -1,6 +1,6 @@
 import express from "express";
 
-import { addArticle, getArticleById, getArticles} from './database.js';
+import { addArticle, changeArticle, getArticleById, getArticles} from './database.js';
 
 const app = express();
 
@@ -20,12 +20,32 @@ app.get("/articles/:id", async (req, res)=>{
 app.post("/articles", async (req, res)=>{
     const {name, description, category_id} = req.body;
     const article = await addArticle(name, description, category_id);
+      
+   
+    if (article.affectedRows) {
     res.status(201).send(article);
+    }
+
+    res.status(400).send("Запись не создана");
 });
 
+app.put("/articles", async (req, res)=>{
+    const {name, description, category_id} = req.body;
+    const article = await changeArticle(name, description, category_id);
+      
+   
+    if (article.affectedRows) {
+        res.status(201).send(article);
+    }
+
+    res.status(400).send("Совпадений не найдено");
+});
+
+
 app.use((err,req,res,next)=>{
+    const statusCode = err.statusCode || 500;
     console.log(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(statusCode).send('Что-то сломалось!');
 });
 
 app.listen(8080, ()=>{
