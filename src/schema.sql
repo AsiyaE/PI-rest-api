@@ -1,4 +1,3 @@
-CREATE DATABASE articles_info;
 USE articles_info;
 
 CREATE TABLE Article_categories (
